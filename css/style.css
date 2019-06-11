@@ -1,0 +1,110 @@
+* {
+    box-sizing: border-box;
+}
+
+
+
+.square {
+    background-color: #eef5c4;
+    width: 75px;
+    height: 75px;
+    border: solid #7f836b;
+    float: left;
+    margin: 0 auto;
+}
+
+#victory_banner {
+    text-align: center;
+    color: crimson;
+    height: 100px;
+
+}
+
+
+/*
+.square:nth-child(-n+3) {
+    background-color: yellowgreen;
+    border-width: 2.5px 2.5px 2.5px 0;
+}
+
+.square:nth-child(n+4):nth-last-child(n+4) {
+    background-color: red;
+    border-width: 0px 2.5px 2.5px 0;
+}
+
+.square:nth-last-child(-n+3) {
+    background-color: blue;
+    border-width: 0px 2.5px 2.5px 0;
+}
+
+*/
+
+.square:hover {
+    cursor: pointer;
+    background-color: blueviolet;
+}
+
+.grid {
+    border: 2px solid gray;
+    width: 275px;
+    height: 275px;
+    padding: 20px;
+    margin: 0 auto;
+    background: #daf5d8;
+}
+
+h1 {
+    text-align: center;
+}
+
+.buttonClicked {
+    background: red;
+}
+
+.cross {
+    /*background: #f90;*/
+    color: black;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-size: 3em;
+    font-weight: bold;
+    text-align: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 5px;
+    margin: 0 auto;
+    align-content: center;
+    vertical-align: middle;
+    visibility: hidden;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.square_PC {
+    background: green;
+}
+
+.button_section {
+    width: 200px;
+    margin: 0 auto;
+    background: yellow;
+    text-align: center;
+}
+
+#refresh_btn {
+    width: 150px;
+    height: 50px;
+    background: #0c3b39;
+    display: inline-block;
+}
+
+#refresh_btn:hover {
+    background: #2f6260;
+}
+
+#refresh_btn > h3 {
+    color: white;
+}
+
+/*.square_clicked {
+    color: black;
+}*/
