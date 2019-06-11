@@ -1,23 +1,6 @@
-function page_refresh() {
-    document.location.reload();
-}
-
-// Function to highlight victory positions in game
-function vic_highlight() {
-
-    console.log("Beginning victory highlighting");
-
-    for (var i = 0; i <= 2; i++) {
-        document.getElementsByClassName("square")[i].style.background = "orange";
-    }
-
-    console.log("Completed victory highlighting");
-}
-
 var count = 0;
 
-var victory_flag = false;
-
+var victory_state = new Boolean(false);
 
 var grid = [
 
@@ -26,8 +9,6 @@ var grid = [
     0, 0, 0
 
 ];
-
-var vic_pos = [-1, -1, -1]; // recording victory positions
 
 
 
@@ -38,75 +19,55 @@ function getID(e) {
 }
 
 
-document.getElementById("one").addEventListener("click", mySecondFunction);
-
-var _title = document.getElementById("title");
-
-function mySecondFunction() {
 
 
 
-}
 
 document.addEventListener("click", function (event) {
 
+
+
+    // console.log("VICTORY STATUS: " + victory_state);
 
 
     target_id = getID(event);
 
     console.log("Reprinting ID: " + target_id);
 
+    if (event.target.classList.contains("square")) {
 
-    if (victory_flag == false) {
+        if (event.target.classList.contains("buttonClicked")) {
+            //event.target.classList.remove("buttonClicked");
 
-        if (event.target.classList.contains("square")) {
-
-            if (event.target.classList.contains("buttonClicked")) {
-                //event.target.classList.remove("buttonClicked");
-
-                //document.getElementById(target_id).getElementsByClassName("cross")[0].style.visibility = "hidden";
+            //document.getElementById(target_id).getElementsByClassName("cross")[0].style.visibility = "hidden";
 
 
-            } else {
-                event.target.classList.add("buttonClicked");
-                document.getElementById(target_id).getElementsByClassName("cross")[0].style.visibility = "visible";
-            }
-
-            count++;
-
-            array_Update();
-            victory_flag = victory_check();
-            console.log("Victory Flag: " + victory_flag);
-            console.log("Victory positions: " + vic_pos);
-
-            if (victory_flag == true) {
-                vic_highlight();
-            }
-
-
-
-
-            if (victory_flag == false) {
-                PC_move();
-                array_Update();
-                victory_flag = victory_check();
-                console.log("Victory Flag: " + victory_flag);
-
-
-            }
-
-
-
-
-
+        } else {
+            event.target.classList.add("buttonClicked");
+            document.getElementById(target_id).getElementsByClassName("cross")[0].style.visibility = "visible";
         }
 
+        count++;
 
+        array_Update();
+        victory_state = victory_check();
+        // console.log("victory_state: " + victory_state.toString());
+
+
+
+
+
+        PC_move();
 
 
 
 
     }
+
+
+
+
+
 
 });
 
@@ -130,11 +91,7 @@ function victory_check() {
     var user_count = 0;
     var PC_count = 0;
     var k = 0;
-    vic_pos = [0, 0, 0]; // recording victory positions
-    var rd = 0;
 
-
-    console.log("entering victory check");
 
     // ******************* HORIZONTAL CHECK **********************
 
@@ -145,8 +102,6 @@ function victory_check() {
         user_count = 0;
         PC_count = 0;
         k = 0;
-        rd = 0;
-
 
         //console.log("i: " + i);
         //console.log("empty positions: ");
@@ -158,19 +113,13 @@ function victory_check() {
                 user_count++;
                 k = i + j;
                 //console.log("Position(" + k + "): " + "Empty");
-                vic_pos[rd] = k;
             } else if (grid[i + j] == 2) {
                 PC_count++;
                 //console.log("Position(" + k + "): " + "PC");
             }
-            rd++;
         }
 
         console.log("------------------");
-        console.log("user count:" + user_count);
-        console.log("PC count:" + PC_count);
-        console.log("Victory positions: " + vic_pos);
-        console.log(vic_pos);
 
         if (user_count == 3) {
             console.log("User Wins! - Horizontal");
@@ -191,8 +140,6 @@ function victory_check() {
         user_count = 0;
         PC_count = 0;
         k = 0;
-        rd = 0;
-        vic_pos = [-1, -1, -1]; // recording victory positions
 
         //console.log("i: " + i);
 
@@ -281,12 +228,8 @@ function victory_check() {
 
     }
 
-    console.log("------------------");
-    console.log("user count:" + user_count);
-    console.log("PC count:" + PC_count);
 
 
-    return false;
 
 }
 
@@ -516,6 +459,8 @@ function PC_move() {
     console.log(EP);
     console.log(max_check);
 
+    console.log("RUNTHROUGH");
+
     var max_size = Math.max.apply(null, max_check);
     beta = max_check.indexOf(max_size);
 
@@ -529,4 +474,11 @@ function PC_move() {
     document.getElementsByClassName("square")[EP[beta][1]].getElementsByTagName("span")[0].innerHTML = "O";
 
     document.getElementsByClassName("square")[EP[beta][1]].getElementsByTagName("span")[0].style.visibility = "visible";
+
+
+
+
+
+
+
 }
