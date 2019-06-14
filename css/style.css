@@ -16,6 +16,8 @@
 #victory_banner {
     text-align: center;
     color: crimson;
+    height: 100px;
+
 }
 
 
@@ -39,7 +41,7 @@
 
 .square:hover {
     cursor: pointer;
-    /*background-color: #fafcec;*/
+    background-color: blueviolet;
 }
 
 .grid {
@@ -48,6 +50,7 @@
     height: 275px;
     padding: 20px;
     margin: 0 auto;
+    background: #daf5d8;
 }
 
 h1 {
@@ -78,6 +81,28 @@ h1 {
 
 .square_PC {
     background: green;
+}
+
+.button_section {
+    width: 200px;
+    margin: 0 auto;
+    background: yellow;
+    text-align: center;
+}
+
+#refresh_btn {
+    width: 150px;
+    height: 50px;
+    background: #0c3b39;
+    display: inline-block;
+}
+
+#refresh_btn:hover {
+    background: #2f6260;
+}
+
+#refresh_btn > h3 {
+    color: white;
 }
 
 /*.square_clicked {
