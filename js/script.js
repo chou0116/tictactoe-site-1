@@ -77,6 +77,7 @@ function user_move(event) {
     grid[parseInt(event.target.id)] = "U";
     //event.target.style.background = "red";
     event.target.innerHTML = "X";
+    event.target.style.fontFamily = "'Baloo', cursive";
     event.target.style.fontWeight = "600";
     event.target.style.color = "#f87e04";
     event.target.classList.remove("not_clicked");

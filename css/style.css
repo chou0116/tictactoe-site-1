@@ -1,3 +1,9 @@
+@import url('https://fonts.googleapis.com/css?family=Luckiest+Guy&display=swap');
+
+@import url('https://fonts.googleapis.com/css?family=Baloo&display=swap');
+
+@import url('https://fonts.googleapis.com/css?family=Ubuntu&display=swap');
+
 * {
     box-sizing: border-box;
 }
@@ -48,6 +54,7 @@ body {
     margin-top: 25px;
     border: none;
     border-radius: 2.5px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease 0s;
 }
 
@@ -70,6 +77,7 @@ body {
     margin: 0 auto;
     color: green;
     margin-top: 75px;
+    font-family: 'Ubuntu', sans-serif;
 }
 
 .not_clicked {
@@ -86,11 +94,13 @@ body {
 .user_clicked {
     background-color: #eff2f4;
     transition: all 0.4s ease 0s;
+    font-family: 'Baloo', cursive;
 }
 
 .computer_clicked {
     background-color: #eff2f4;
     transition: all 0.4s ease 0s;
+    font-family: 'Baloo', cursive;
 }
 
 .victory_U {
