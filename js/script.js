@@ -1,67 +1,3 @@
-function page_refresh() {
-    document.location.reload();
-}
-
-// Function to highlight victory positions in game
-function vic_highlight(victor) {
-
-    console.log("Beginning victory highlighting");
-
-    var victory_color = "";
-    var vic_pos_gnrl = [];
-
-    if (victor == "USER") {
-        victory_color = "orange";
-        vic_pos_gnrl = vic_pos;
-    } else {
-        victory_color = "turquoise";
-        vic_pos_gnrl = vic_pos_2;
-    }
-
-    console.log("General VICTORY positions: ");
-    console.log(vic_pos_gnrl);
-
-
-    for (var i = 0; i <= 2; i++) {
-        document.getElementsByClassName("square")[vic_pos_gnrl[i]].style.background = victory_color;
-    }
-
-    console.log("Completed victory highlighting");
-}
-
-function all_pos_filled() {
-
-    var fill_count = 0;
-
-    for (var i = 0; i <= 8; i++) {
-        if (grid[i] != 0) {
-            fill_count++;
-        }
-    }
-
-    if (fill_count == 9) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function first_avail_empty_pos() {
-    for (var i = 0; i <= 8; i++) {
-        if (grid[i] == 0) {
-            console.log("First available pos is: " + i);
-            return i;
-        }
-    }
-
-    return -1;
-}
-
-var count = 0;
-
-var victory_flag = false;
-
-
 var grid = [
 
     0, 0, 0,
@@ -70,553 +6,251 @@ var grid = [
 
 ];
 
-var vic_pos = [-1, -1, -1]; // recording victory positions for User
 
-var vic_pos_2 = [-1, -1, -1]; // recording victory positions for PC
+var victory_pos = {
+    "U": [[0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6]],
+
+    "C": [[0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6]]
+};
+
+var emptyPositions = [
+
+    0, 1, 2,
+    3, 4, 5,
+    6, 7, 8
+
+];
 
 
-function getID(e) {
-    e = e || window.event;
-    e = e.target || e.srcElement;
-    return e.id;
+function page_refresh() {
+    document.location.reload();
 }
 
+function generateTable() {
+    var _myTable = document.createElement("table");
+    _myTable.setAttribute("id", "myTable");
 
-document.getElementById("one").addEventListener("click", mySecondFunction);
+    document.body.appendChild(_myTable);
 
-var _title = document.getElementById("title");
+    var _tbody = document.getElementById("myTable").getElementsByTagName("tbody")[0];
 
-function mySecondFunction() {
+    var id_count = 0;
 
+    for (var i = 0; i < 3; i++) {
+        var _row = _myTable.insertRow(i);
+        for (var j = 0; j < 3; j++) {
 
-
-}
-
-document.addEventListener("click", function (event) {
-
-
-
-    target_id = getID(event);
-
-    console.log("Reprinting ID: " + target_id);
-
-
-    if (victory_flag == false) {
-
-        if (event.target.classList.contains("square")) {
-
-            if (event.target.classList.contains("buttonClicked")) {
-                //event.target.classList.remove("buttonClicked");
-
-                //document.getElementById(target_id).getElementsByClassName("cross")[0].style.visibility = "hidden";
-
-
-            } else {
-                event.target.classList.add("buttonClicked");
-                document.getElementById(target_id).getElementsByClassName("cross")[0].style.visibility = "visible";
-            }
-
-            count++;
-
-            array_Update();
-            victory_flag = victory_check();
-            console.log("Victory Flag: " + victory_flag);
-            console.log("Victory positions: " + vic_pos);
-
-            console.log("Fill count: " + all_pos_filled());
-
-            if (victory_flag == true) {
-                vic_highlight("USER");
-            } else if (all_pos_filled() == true) {
-                document.getElementById("victory_banner").innerHTML = "It's a Draw!";
-            }
-
-
-
-
-            if (victory_flag == false) {
-                PC_move();
-                array_Update();
-                victory_flag = victory_check();
-                console.log("Victory Flag: " + victory_flag);
-
-                console.log("Fill count: " + all_pos_filled());
-
-                if (victory_flag == true) {
-                    vic_highlight("PC");
-                } else if (all_pos_filled() == true) {
-                    document.getElementById("victory_banner").innerHTML = "It's a Draw!";
-                }
-
-
-
-
-
-
-            }
-
-
-
-
-
+            var _cell = _row.insertCell(j);
+            _cell.className = "_cell";
+            _cell.setAttribute("id", id_count);
+            _cell.addEventListener("click", user_move, "false");
+            _cell.classList.add("not_clicked");
+            id_count++;
         }
 
-
-
-
-
-
+        _myTable.appendChild(_row);
     }
 
-});
+    var _refresh = document.createElement("button");
+    _refresh.innerHTML = "<h3>Restart Game</h3>";
+    _refresh.setAttribute("id", "refresh_btn");
+    _refresh.setAttribute("onclick", "page_refresh()");
 
-document.addEventListener("mouseover", function (event) {
+    document.body.appendChild(_refresh);
 
 
-    target_id = getID(event);
+    var _vicBanner = document.createElement("h2");
+    _vicBanner.setAttribute("id", "vicBanner");
+    _vicBanner.innerHTML = "";
+    document.body.appendChild(_vicBanner);
 
-    if (event.target.classList.contains("square_PC") || event.target.classList.contains("buttonClicked")) {
-        document.getElementById(target_id).style.cursor = "default";
 
+}
+
+
+function user_move(event) {
+    console.log("human: " + event.target.id);
+    grid[parseInt(event.target.id)] = "U";
+    //event.target.style.background = "red";
+    event.target.innerHTML = "X";
+    event.target.style.fontWeight = "600";
+    event.target.style.color = "#f87e04";
+    event.target.classList.remove("not_clicked");
+    event.target.classList.add("user_clicked");
+    event.target.removeEventListener("click", user_move, "false");
+
+    var table = document.getElementById("myTable"),
+        rIndex, cIndex;
+
+    // table rows
+    for (var i = 0; i < table.rows.length; i++) {
+        // row cells
+        for (var j = 0; j < table.rows[i].cells.length; j++) {
+
+            // returns parent row element of the clicked cell element
+            rIndex = event.target.parentElement.rowIndex + 1;
+            cIndex = event.target.cellIndex + 1;
+            console.log("Row : " + rIndex + " , Cell : " + cIndex);
+
+        }
+    }
+
+    var gameOver = checkVictory("U");
+
+    if (!gameOver) {
+        computer_Move();
+
+        checkVictory("C");
+    }
+}
+
+function computer_Move() {
+    console.log("inside computer move");
+    var bestPos = evaluateMoves();
+
+    if (bestPos == -1) {
+        console.log("Draw");
     } else {
-        document.getElementById(target_id).style.cursor = "pointer";
+
+        grid[bestPos] = "C";
+        var _ComputerClick = document.getElementsByTagName("td")[bestPos];
+        _ComputerClick.classList.remove("not_clicked");
+        _ComputerClick.classList.add("computer_clicked");
+        _ComputerClick.removeEventListener("click", user_move, "false");
+        _ComputerClick.innerHTML = "O";
+        _ComputerClick.style.fontWeight = "600";
+        _ComputerClick.style.color = "#3ebbdd";
     }
-
-
-});
-
-function victory_check() {
-
-    var user_count = 0;
-    var PC_count = 0;
-    var k = 0;
-    vic_pos = [-1, -1, -1]; // recording victory positions for User
-    vic_pos_2 = [-1, -1, -1]; // recording victory positions for PC
-    var rd = 0;
-
-
-    console.log("entering victory check");
-
-    // ******************* HORIZONTAL CHECK **********************
-
-    // check if row has 0s or 2s
-    var i;
-    for (i = 0; i <= 6; i += 3) {
-
-        user_count = 0;
-        PC_count = 0;
-        k = 0;
-        rd = 0;
-
-
-        //console.log("i: " + i);
-        //console.log("empty positions: ");
-
-        var j;
-        for (j = 0; j <= 2; j++) {
-            //console.log("i+j: " + (i + j));
-            if (grid[i + j] == 1) {
-                user_count++;
-                k = i + j;
-                //console.log("Position(" + k + "): " + "User");
-                vic_pos[rd] = k;
-            } else if (grid[i + j] == 2) {
-                PC_count++;
-
-                //console.log("Position(" + k + "): " + "PC");
-            }
-            rd++;
-        }
-
-        console.log("------------------");
-        console.log("user count:" + user_count);
-        console.log("PC count:" + PC_count);
-        console.log("Victory positions: " + vic_pos);
-        console.log(vic_pos);
-
-        if (user_count == 3) {
-            console.log("User Wins! - Horizontal");
-            document.getElementById("victory_banner").innerHTML = "User Wins!";
-            return true;
-        } else if (PC_count == 3) {
-            console.log("PC Wins! - Horizontal");
-            document.getElementById("victory_banner").innerHTML = "PC Wins!";
-            return true;
-        }
-
-
-    }
-
-    vic_pos = [-1, -1, -1]; // recording victory positions for User
-    vic_pos_2 = [-1, -1, -1]; // recording victory positions for PC
-
-    // ******************* VERTICAL CHECK **********************
-    for (i = 0; i <= 2; i++) {
-
-        user_count = 0;
-        PC_count = 0;
-        k = 0;
-        rd = 0;
-
-
-        //console.log("i: " + i);
-
-        //console.log("empty positions: ");
-
-        var j;
-        for (j = 0; j <= 6; j += 3) {
-            //console.log("i+j: " + (i + j));
-            if (grid[i + j] == 1) {
-                user_count++;
-                k = i + j;
-                vic_pos[rd] = k;
-                //console.log("Position(" + k + "): " + "User");
-            } else if (grid[i + j] == 2) {
-                PC_count++;
-                k = i + j;
-                vic_pos_2[rd] = i + j;
-                //console.log("Position(" + k + "): " + "PC");
-            }
-
-            rd++;
-        }
-
-        console.log("------------------");
-
-        if (user_count == 3) {
-            console.log("User Wins! - Vertical");
-            document.getElementById("victory_banner").innerHTML = "User Wins!";
-            return true;
-        } else if (PC_count == 3) {
-            console.log("PC Wins! - Vertical");
-            document.getElementById("victory_banner").innerHTML = "PC Wins!";
-            return true;
-        }
-
-
-    }
-
-
-
-    // ******************* DIAGONAL CHECK ***********************
-
-    vic_pos = [-1, -1, -1]; // recording victory positions for User
-    vic_pos_2 = [-1, -1, -1]; // recording victory positions for PC
-
-    var k = 0;
-    var a = 0;
-
-    var first = [0, 2];
-    var inc = [4, 2];
-    var last = [8, 4];
-
-
-    // check if row has 0s or 2s
-
-    for (var i = 0; i <= 2; i += 2) {
-
-        user_count = 0;
-        PC_count = 0;
-        k = 0;
-        rd = 0;
-
-        //console.log("i: " + i);
-
-        //console.log("empty positions: ");
-
-
-        //console.log("Last: " + last[a]);
-        //console.log("Inc: " + inc[a]);
-
-        for (var j = 0; j <= last[a]; j += inc[a]) {
-            //console.log("i+j: " + (i + j));
-            if (grid[i + j] == 1) {
-                user_count++;
-                k = i + j;
-                vic_pos[rd] = k;
-                //console.log("Position(" + k + "): " + "User");
-            } else if (grid[i + j] == 2) {
-                PC_count++;
-                k = i + j;
-                vic_pos_2[rd] = i + j;
-                //console.log("Position(" + k + "): " + "PC");
-            }
-
-            rd++;
-        }
-
-        //console.log("*************************");
-
-        if (user_count == 3) {
-            console.log("User Wins! - Diagonal");
-            document.getElementById("victory_banner").innerHTML = "User Wins!";
-            return true;
-        } else if (PC_count == 3) {
-            console.log("PC Wins! - Diagonal");
-            document.getElementById("victory_banner").innerHTML = "PC Wins!";
-            return true;
-        }
-
-        a++;
-
-
-    }
-
-    console.log("------------------");
-    console.log("user count:" + user_count);
-    console.log("PC count:" + PC_count);
-
-
-    return false;
 
 }
 
+function evaluateMoves() {
 
-function horz_check() {
-
-
-    //console.log(grid);
-    //console.log("Horizontal Position: ")
-
-    var empty_count = 0;
-    var PC_count = 0;
-    var k = 0;
-    var horz_size = 0;
+    var potential = 0;
+    var max_potential = 0;
+    var max_potential_combo;
+    var best_pos;
+    var empty_pos;
+    var best_empty_pos;
 
 
-    // check if row has 0s or 2s
-    var i;
-    for (i = 0; i <= 6; i += 3) {
+    for (var i = 0; i < victory_pos["C"].length; i++) {
+        console.log(victory_pos["C"]);
+        for (var j = 0; j < 3; j++) {
+            // eliminate computer victory positions occupied by user
+            if (grid[victory_pos["C"][i][j]] == "U") {
+                console.log("*****user position detected i: " + victory_pos["C"][i][j]);
+                console.log(victory_pos["C"]);
+                emptyPositions.splice(victory_pos["C"][i][j], 1);
+                victory_pos["C"].splice(i, 1);
+                console.log(victory_pos["C"]);
+                i--;
 
-        empty_count = 0;
-        PC_count = 0;
-        horz_size = 0;
-        k = 0;
 
-        //console.log("i: " + i);
 
-        //console.log("empty positions: ");
+                break;
+            }
 
-        var j;
-        for (j = 0; j <= 2; j++) {
-            //console.log("i+j: " + (i + j));
-            if (grid[i + j] == 0) {
-                empty_count++;
-                k = i + j;
-                //console.log("Position(" + k + "): " + "Empty");
-            } else if (grid[i + j] == 2) {
-                PC_count++;
-                horz_size++;
-                //console.log("Position(" + k + "): " + "PC");
+        }
+
+    }
+
+
+    for (var i = 0; i < victory_pos["C"].length; i++) {
+        potential = 0;
+        empty_pos = 0;
+
+        for (var j = 0; j < 3; j++) {
+            // measure potential of remaining positions 
+            if (grid[victory_pos["C"][i][j]] == "0") {
+                console.log("*****empty position detected i: " + victory_pos["C"][i][j]);
+                empty_pos = j;
+                //potential++;
+            } else if (grid[victory_pos["C"][i][j]] == "C") {
+                console.log("*****computer position detected i: " + victory_pos["C"][i][j]);
+                emptyPositions.splice(victory_pos["C"][i][j], 1);
+                potential++;
             }
         }
 
-        console.log("------------------");
+        console.log("potential: " + potential);
+        console.log("max_potential: " + max_potential);
+        console.log("empty_pos: " + empty_pos);
 
-        if ((empty_count == 3) || (empty_count == 2 && PC_count == 1) || (empty_count == 1 && PC_count == 2)) {
-            return [horz_size, k];
+        // Find best potential
+        if (potential >= max_potential) {
+            max_potential = potential;
+            max_potential_combo = i;
+            best_empty_pos = empty_pos;
+
+            console.log("max_potential_combo " + max_potential_combo);
+            console.log("best_empty_pos " + best_empty_pos);
         }
-
-
     }
 
-    return [0, -1];
 
-
-}
-
-
-function diag_check() {
-
-
-    //console.log(grid);
-    //console.log("Vertical Position: ")
-
-    var empty_count = 0;
-    var PC_count = 0;
-    var k = 0;
-    var a = 0;
-    var diag_size = 0;
-
-    var first = [0, 2];
-    var inc = [4, 2];
-    var last = [8, 4];
-
-
-    // check if row has 0s or 2s
-
-    for (var i = 0; i <= 2; i += 2) {
-
-        empty_count = 0;
-        PC_count = 0;
-        diag_size = 0;
-        k = 0;
-
-        //console.log("i: " + i);
-
-        //console.log("empty positions: ");
-
-
-        //console.log("Last: " + last[a]);
-        //console.log("Inc: " + inc[a]);
-
-        for (var j = 0; j <= last[a]; j += inc[a]) {
-            //console.log("i+j: " + (i + j));
-            if (grid[i + j] == 0) {
-                empty_count++;
-                k = i + j;
-                //console.log("Position(" + k + "): " + "Empty");
-            } else if (grid[i + j] == 2) {
-                PC_count++;
-                diag_size++;
-                //console.log("Position(" + k + "): " + "PC");
-            }
-        }
-
-        //console.log("*************************");
-
-        if ((empty_count == 3) || (empty_count == 2 && PC_count == 1) || (empty_count == 1 && PC_count == 2)) {
-            return [diag_size, k];
-
-        }
-
-        a++;
-
-
-    }
-
-    console.log("------------------");
-
-    return [0, -1];
-
-
-}
-
-
-function vert_check() {
-
-
-    //console.log(grid);
-    //console.log("Diagonal Position: ")
-
-    var empty_count = 0;
-    var PC_count = 0;
-    var k = 0;
-    var vert_size = 0;
-
-
-    // check if row has 0s or 2s
-    var i;
-    for (i = 0; i <= 2; i++) {
-
-        empty_count = 0;
-        PC_count = 0;
-        vert_size = 0;
-        k = 0;
-
-        //console.log("i: " + i);
-
-        //console.log("empty positions: ");
-
-        var j;
-        for (j = 0; j <= 6; j += 3) {
-            //console.log("i+j: " + (i + j));
-            if (grid[i + j] == 0) {
-                empty_count++;
-                k = i + j;
-                //console.log("Position(" + k + "): " + "Empty");
-            } else if (grid[i + j] == 2) {
-                PC_count++;
-                vert_size++;
-                //console.log("Position(" + k + "): " + "PC");
-            }
-        }
-
-        console.log("------------------");
-
-        if ((empty_count == 3) || (empty_count == 2 && PC_count == 1) || (empty_count == 1 && PC_count == 2)) {
-            return [vert_size, k];
-
-        }
-
-
-    }
-
-    return [0, -1];
-
-
-}
-
-
-function array_Update() {
-
-
-
-    for (i = 0; i <= 8; i++) {
-
-        // check if square filled by user
-        if (document.getElementsByClassName("square")[i].classList.contains("buttonClicked")) {
-            grid[i] = 1;
-        }
-
-        // check if square filled by PC
-        else if (document.getElementsByClassName("square")[i].classList.contains("square_PC")) {
-            grid[i] = 2;
-        }
-
-        // check if square empty
-        else if (!document.getElementsByClassName("square")[i].classList.contains("buttonClicked") && !document.getElementsByClassName("square")[i].classList.contains("square_PC")) {
-            grid[i] = 0;
-        }
-
-    }
-
-    // console.log(grid);
-
-}
-
-
-function PC_move() {
-
-    ep1 = horz_check();
-    ep2 = vert_check();
-    ep3 = diag_check();
-
-    EP = [ep1, ep2, ep3];
-    pot = [ep1[0], ep2[0], ep3[0]];
-
-    var beta = 0;
-    var fill_pos = -1;
-
-
-    var max_check = ["", "", ""];
-    for (var i = 0; i <= 2; i++) {
-        max_check[i] = EP[i][0];
-    }
-
-    console.log(EP);
-    console.log(max_check);
-
-    var max_size = Math.max.apply(null, max_check);
-    beta = max_check.indexOf(max_size);
-
-    console.log("Potentials: " + pot);
-
-    console.log("Max size: " + max_size);
-    console.log("Beta: " + beta);
-    console.log(">>>>>>>> " + EP[beta][1] + " <<<<<<<<<<<<<");
-
-    if (EP[beta][1] != -1) {
-        fill_pos = EP[beta][1];
+    if (victory_pos["C"].length == 0 && emptyPositions.length == 0) {
+        console.log("Draw");
+        return -1;
+    } else if (victory_pos["C"].length == 0 && emptyPositions.length != 0) {
+        return emptyPositions[0];
     } else {
-        fill_pos = first_avail_empty_pos();
+        var best_pos = victory_pos["C"][max_potential_combo][best_empty_pos];
+
+        console.log("Best position is: " + best_pos);
+
+        return best_pos;
+
     }
 
-    console.log("The calculated position to fill is: " + fill_pos);
 
-    document.getElementsByClassName("square")[fill_pos].classList.add("square_PC");
 
-    document.getElementsByClassName("square")[fill_pos].getElementsByTagName("span")[0].innerHTML = "O";
 
-    document.getElementsByClassName("square")[fill_pos].getElementsByTagName("span")[0].style.visibility = "visible";
+
 }
+
+function flashVictoryMessage(i, player) {
+    if (player == "U") {
+        //console.log("User Wins");
+        document.getElementById("vicBanner").innerHTML = "You Win!";
+    } else {
+        //console.log("Computer Wins");
+        document.getElementById("vicBanner").innerHTML = "Sorry! You Lose";
+    }
+
+    var _cells = document.getElementsByTagName("td");
+
+    for (var k = 0; k < 3; k++) {
+        _cells[victory_pos[player][i][k]].classList.remove("user_clicked");
+        _cells[victory_pos[player][i][k]].classList.remove("computer_clicked");
+        _cells[victory_pos[player][i][k]].classList.add("victory_" + player);
+        _cells[victory_pos[player][i][k]].style.color = "white";
+    }
+}
+
+function checkVictory(player) {
+
+    console.log("inside victory check");
+    for (var i = 0; i < victory_pos[player].length; i++) {
+        if (grid[victory_pos[player][i][0]] == player && grid[victory_pos[player][i][1]] == player && grid[victory_pos[player][i][2]] == player) {
+
+            flashVictoryMessage(i, player);
+
+            // ref: https://stackoverflow.com/questions/19469881/remove-all-event-listeners-of-specific-type/19470348
+            var _myTable = document.getElementById("myTable"),
+                _myTableClone = _myTable.cloneNode(true);
+            _myTable.parentNode.replaceChild(_myTableClone, _myTable);
+
+            return true;
+        }
+    }
+
+
+}
+
+
+generateTable();
